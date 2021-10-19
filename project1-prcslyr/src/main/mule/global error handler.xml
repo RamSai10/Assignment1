@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="global_error_handlerError_Handler" doc:id="46aebe16-3ad4-4236-854c-464828eebbfd" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b45a1ce3-595c-4a41-8683-35a46e97d096" type="INPUT:NULLUSERID" >
+			<ee:transform doc:name="Copy_of_Transform Message" doc:id="77853c20-5fcb-4fa5-b222-66ad6c738c83" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	
+	"error": "Null USERID",
+	"message": "Value at least one user id should be present in the request",
+	"detail": "Please add any one user ID"
+	
+	}
+	]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="53bbf9dd-3702-478a-be2e-5f1f9d7d0dab" type="ANY" >
+			<ee:transform doc:name="Copy_of_Transform Message" doc:id="6eabd563-df60-4a85-9b68-089c46b0a537" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": error.muleMessage.typedValue default error.description
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+</mule>

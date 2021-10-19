@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="5274e2ad-178b-4003-a428-b3c58c62491b" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="project1-prcslyrFlow" doc:id="f1696277-9cbc-4e14-a9db-3aafdf070910" >
+		<validation:is-not-blank-string doc:name="Is not blank string" doc:id="ec29b1f3-9fee-487c-b91e-8b40c7900a06" value="#[attributes.queryString]">
+			<error-mapping targetType="INPUT:NULLUSERID" />
+		</validation:is-not-blank-string>
+		<http:request method="GET" doc:name="Request" doc:id="dae23290-a653-49e9-8c00-41b0be01f643" config-ref="HTTP_Request_configuration" path="/api/details" responseTimeout="1800000">
+			<http:query-params><![CDATA[#[output application/json
+---
+
+	{
+	("UserID1" : attributes.queryParams.UserID1) if (attributes.queryParams.UserID1 != null),
+	("UserID2" : attributes.queryParams.UserID2) if (attributes.queryParams.UserID2 != null),
+	("UserID3" : attributes.queryParams.UserID3) if (attributes.queryParams.UserID3 != null)
+}]]]></http:query-params>
+		</http:request>
+		<error-handler ref="global_error_handlerError_Handler" />
+	</flow>
+</mule>
